@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  api:
+    build: .
+    container_name: 'rw_api'
+    ports:
+      - '0.0.0.0:8000:8000'
+    restart: 'unless-stopped'
+    volumes:
+      - './deepspeech_model.pbmm:/app/deepspeech_model.pbmm:ro'
+    environment:
+      - SANIC_DEBUG=${SANIC_DEBUG}
+      - SANIC_TESTING=${SANIC_TESTING}
+      - SANIC_HOST=${SANIC_HOST}
+      - SANIC_PORT=${SANIC_PORT}
+      - SANIC_ENV=${SANIC_ENV}

@@ -1,0 +1,9 @@
+deepspeech==0.9.1
+ffmpeg-python==0.2.0
+sanic==20.9.1
+websocket-client==0.57.0
+websockets==8.1
+wsaccel==0.6.3
+environs==9.3.0
+pytest-cov==2.11.0
+uWSGI==2.0.19.1
