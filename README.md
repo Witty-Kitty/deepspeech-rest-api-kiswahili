@@ -1,4 +1,4 @@
-# DeepSpeech RW API
+# DeepSpeech REST API
 
 This REST API is built on top of Mozilla's [DeepSpeech](https://github.com/mozilla/DeepSpeech). It is written based on
 examples provided by Mozilla and can be found [here](https://github.com/mozilla/DeepSpeech-examples)
@@ -10,10 +10,10 @@ _We haven't yet tested the limitations of both methods in terms of audio size._
 
 ## Setting up
 
-Clone the repository on your local machine and change directory to _deepspeech-rw-api_
+Clone the repository on your local machine and change directory to _deepspeech-rest-api_
 
 ```shell
-git clone https://github.com/fabricekwizera/deepspeech-rw-api.git && cd deepspeech-rw-api 
+git clone https://github.com/fabricekwizera/deepspeech-rest-api.git && cd deepspeech-rest-api 
 ```
 
 Create a virtual environment and activate it (assuming that it is installed your machine) 
