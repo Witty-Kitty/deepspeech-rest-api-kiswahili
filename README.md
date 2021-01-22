@@ -1,4 +1,9 @@
 # DeepSpeech REST API
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+
+---
 
 This REST API is built on top of Mozilla's [DeepSpeech](https://github.com/mozilla/DeepSpeech). It is written based on
 examples provided by Mozilla and can be found [here](https://github.com/mozilla/DeepSpeech-examples)
@@ -7,6 +12,8 @@ It accepts HTTP methods such as GET and POST and WebSocket. To perform transcrip
 appropriate for relatively short audio while websockets can be used even for long audio recordings.
 
 _We haven't yet tested the limitations of both methods in terms of audio size._
+
+----
 
 ## Setting up
 
@@ -23,14 +30,18 @@ and install all the needed requirements.
  virtualenv -p python3 venv && source venv/bin/activate && pip install -r requirements.txt
 ```
 
+----
+
 ## Download the model
 
 ```shell
 wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.pbmm -O deepspeech_model.pbmm
 ```
 
+
 ## Usage
 
+----
 ### Running the server
 
 ```shell

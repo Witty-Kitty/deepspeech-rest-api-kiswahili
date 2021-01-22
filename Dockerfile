@@ -24,7 +24,7 @@ RUN groupadd --gid=1000 api \
  && useradd --uid=1000 --gid=1000 --system api
 USER api
 
-ADD --from=build --chown=api:api /venv/ /venv/
+COPY --from=build --chown=api:api /venv/ /venv/
 ENV PATH=/venv/bin/:$PATH
 
 ADD --chown=api:api app/ app/
