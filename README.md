@@ -1,4 +1,5 @@
 # DeepSpeech REST API
+
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
@@ -23,7 +24,7 @@ Clone the repository on your local machine and change directory to _deepspeech-r
 git clone https://github.com/fabricekwizera/deepspeech-rest-api.git && cd deepspeech-rest-api 
 ```
 
-Create a virtual environment and activate it (assuming that it is installed your machine) 
+Create a virtual environment and activate it (assuming that it is installed your machine)
 and install all the needed requirements.
 
 ```shell
@@ -32,16 +33,22 @@ and install all the needed requirements.
 
 ----
 
-## Download the model
+## Download the model and the scorer
+
+For English model and scorer, follow below links
 
 ```shell
 wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.pbmm -O deepspeech_model.pbmm
+wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.scorer -O deepspeech_model.scorer
 ```
 
+For other languages, you can place them in the current working directory under the names _deepspeech_model.pbmm_ for the
+model and _deepspeech_model.scorer_ for the scorer.
 
 ## Usage
 
 ----
+
 ### Running the server
 
 ```shell
@@ -58,14 +65,14 @@ Build image and run container
 docker-compose up
 ```
 
-Sending requests to server using HTTP
+Sending STT requests to server using HTTP
 
 ```shell
-curl -X POST -F "speech=@2830-3980-0043.wav" http://0.0.0.0:8000/api/v1/http
+curl -X POST -F "speech=@2830-3980-0043.wav" http://0.0.0.0:8000/api/v1/stt/http
 ```
 
-and using the websocket (open another Shell window). It is simply running below Python script to because websockets 
-don't support _curl_  
+and using the websocket (open another Shell window). It is simply running below Python script to because websockets
+don't support _curl_
 
 ```shell
 python.test_websocket.py

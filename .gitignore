@@ -2,8 +2,8 @@
 .idea
 
 # The neural network model
-
 *.pbmm
+*.scorer
 
 *.DS_Store
 
