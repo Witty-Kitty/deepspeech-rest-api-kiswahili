@@ -75,3 +75,10 @@ async def delete_hot_word(request):
     hw = list(keys)[0]
     results = stt_engine.erase_hot_word(hw)
     return sanic_json(HotWordResponse(results).__dict__)
+
+
+# Route for erasing a hot word
+@api_bp.route('/v1/hw/delete/all', methods=['GET'])
+async def delete_all_hot_words(request):
+    results = stt_engine.clear_hot_words()
+    return sanic_json(HotWordResponse(results).__dict__)
