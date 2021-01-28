@@ -39,23 +39,23 @@ class SpeechToTextEngine:
     def add_hot_word(self, word, boost):
         try:
             self.model.addHotWord(word, boost)
-            return f" '{word}' hot-word with boost '{boost}' was added."
+            return f"'{word}' hot-word with boost '{boost}' was added."
         except RuntimeError:
-            return f" Hot-word was already added."
+            return f"Hot-word was already added."
 
     def erase_hot_word(self, word):
         try:
             self.model.eraseHotWord(word)
-            return f" '{word}' hot-word was erased."
+            return f"'{word}' hot-word is erased."
         except RuntimeError:
-            return f" Hot-word was already erased."
+            return f"That hot-word can't be found."
 
     def clear_hot_words(self):
         try:
             self.model.clearHotWords()
-            return f" All hot-words were erased."
+            return f"All hot-words were erased."
         except RuntimeError:
-            return f" No more hot-words are left."
+            return f"No more hot-words are left."
 
     def sample_rate(self):
         return self.model.sampleRate()

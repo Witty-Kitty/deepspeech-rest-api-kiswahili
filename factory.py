@@ -4,7 +4,7 @@ from config import TestingConfig, ProductionConfig, DevelopmentConfig
 
 
 def create_app():
-    app = Sanic(name='DeepSpeech RW API')
+    app = Sanic(name='DeepSpeech REST API')
 
     # Choosing between possible server environments
     if app.config['ENV'] == 'dev':

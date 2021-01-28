@@ -7,7 +7,7 @@
 ---
 
 This REST API is built on top of Mozilla's [DeepSpeech](https://github.com/mozilla/DeepSpeech). It is written based on
-examples provided by Mozilla and can be found [here](https://github.com/mozilla/DeepSpeech-examples)
+examples provided by Mozilla and they can be found [here](https://github.com/mozilla/DeepSpeech-examples)
 
 It accepts HTTP methods such as GET and POST and WebSocket. To perform transcription process using HTTP methods is
 appropriate for relatively short audio while websockets can be used even for long audio recordings.
@@ -65,7 +65,7 @@ Build image and run container
 docker-compose up
 ```
 
-Sending STT requests to server using HTTP
+- Sending speech-to-text requests to server using HTTP
 
 ```shell
 curl -X POST -F "speech=@2830-3980-0043.wav" http://0.0.0.0:8000/api/v1/stt/http
@@ -75,11 +75,47 @@ and using the websocket (open another Shell window). It is simply running below 
 don't support _curl_
 
 ```shell
-python.test_websocket.py
+python test_websocket.py
 ```
 
 in both cases, after transcription the response looks like
 
 ```shell
 {"message": "experience proves this", "time": 1.4718825020026998}
+```
+
+- Add a hot-word
+
+```shell
+curl -X POST -d '{"football": 1.56}' http://0.0.0.0:8000/api/v1/hw/add
+```
+
+Output
+
+```shell
+{"message":" 'football' hot-word with boost '1.56' was added."}
+```
+
+- Erase a hot-word
+
+```shell
+curl -X DELETE -d '{"football": ""}' http://0.0.0.0:8000/api/v1/hw/delete
+```
+
+Output
+
+```shell
+{"message":" 'football' hot-word was erased."}
+```
+
+- Erase all hot-words
+
+```shell
+curl -X DELETE http://0.0.0.0:8000/api/v1/hw/delete/all
+```
+
+Output
+
+```shell
+{"message":"All hot-words were erased."}
 ```

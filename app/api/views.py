@@ -22,7 +22,7 @@ async def index(request):
 
 
 # HTTP route for speech to text
-@api_bp.route('/v1/stt/http/', methods=['GET', 'POST'])
+@api_bp.route('/v1/stt/http', methods=['GET', 'POST'])
 async def speech_to_text_http(request):
     current_app = request.app
     speech = request.files.get('speech')
@@ -54,31 +54,40 @@ async def speech_to_text_websocket(request, websocket):
         await websocket.close()
 
 
-api_bp.add_websocket_route(speech_to_text_websocket, '/v1/stt/ws/')
+api_bp.add_websocket_route(speech_to_text_websocket, '/v1/stt/ws')
 
 
 # Route for adding a hot word
-@api_bp.route('/v1/hw/add/', methods=['POST', ])
+@api_bp.route('/v1/hw/add', methods=['POST', ])
 async def add_hot_word(request):
-    data = request.args or request.json
-    keys = data.keys()
-    hw = list(keys)[0]
-    boost = data.get(hw)
-    results = stt_engine.add_hot_word(hw, float(boost))
-    return sanic_json(HotWordResponse(results).__dict__)
+    try:
+        data = request.args or request.json
+        keys = data.keys()
+        word = list(keys)[0]
+        if word:
+            boost = data.get(word)
+            results = stt_engine.add_hot_word(word, float(boost))
+            return sanic_json(HotWordResponse(results).__dict__)
+        else:
+            return sanic_json(HotWordResponse('Forgot to provide the hot-word?').__dict__)
+    except AttributeError:
+        return sanic_json(HotWordResponse('Forgot to provide the hot-word?').__dict__)
 
 
 # Route for erasing a hot word
-@api_bp.route('/v1/hw/delete/', methods=['GET'])
+@api_bp.route('/v1/hw/delete', methods=['DELETE'])
 async def delete_hot_word(request):
-    keys = request.args.keys() or request.json.keys()
-    hw = list(keys)[0]
-    results = stt_engine.erase_hot_word(hw)
-    return sanic_json(HotWordResponse(results).__dict__)
+    try:
+        keys = request.args.keys() or request.json.keys()
+        word = list(keys)[0]
+        results = stt_engine.erase_hot_word(word)
+        return sanic_json(HotWordResponse(results).__dict__)
+    except AttributeError:
+        return sanic_json(HotWordResponse('The boost of hot-word is missing.').__dict__)
 
 
-# Route for erasing a hot word
-@api_bp.route('/v1/hw/delete/all', methods=['GET'])
+# Route for erasing all hot words
+@api_bp.route('/v1/hw/delete/all', methods=['DELETE'])
 async def delete_all_hot_words(request):
     results = stt_engine.clear_hot_words()
     return sanic_json(HotWordResponse(results).__dict__)

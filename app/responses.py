@@ -4,7 +4,7 @@ class Response:
 
 
 class SttResponse(Response):
-    def __init__(self, message, time):
+    def __init__(self, message, time=None):
         super().__init__(message)
         self.time = time
 
