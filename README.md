@@ -1,41 +1,36 @@
 # DeepSpeech REST API
 
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![Python 3.6](https://upload.wikimedia.org/wikipedia/commons/a/a5/Blue_Python_3.8_Shield_Badge.svg)](https://www.python.org/downloads/release/python-380/)
 
 ---
 
 This REST API is built on top of Mozilla's [DeepSpeech](https://github.com/mozilla/DeepSpeech). It is written based on
-examples provided by Mozilla and they can be found [here](https://github.com/mozilla/DeepSpeech-examples)
+[examples](https://github.com/mozilla/DeepSpeech-examples) provided by Mozilla.
 
-It accepts HTTP methods such as GET and POST and WebSocket. To perform transcription process using HTTP methods is
-appropriate for relatively short audio while websockets can be used even for long audio recordings.
+It accepts HTTP methods such as GET and POST as well as WebSocket. To perform transcription using HTTP methods is
+appropriate for relatively short audio files while the WebSocket can be used even for longer audio recordings.
 
-_We haven't yet tested the limitations of both methods in terms of audio size._
 
 ----
 
-## Setting up
+## Project setup
 
-Clone the repository on your local machine and change directory to _deepspeech-rest-api_
+- 1. Clone the repository to your local machine and change directory to _deepspeech-rest-api_
 
 ```shell
 git clone https://github.com/fabricekwizera/deepspeech-rest-api.git && cd deepspeech-rest-api 
 ```
 
-Create a virtual environment and activate it (assuming that it is installed your machine)
-and install all the needed requirements.
+- 2. Create a virtual environment and activate it (assuming that it is installed your machine)
+and install the project in editable mode (locally).
 
 ```shell
- virtualenv -p python3 venv && source venv/bin/activate && pip install -r requirements.txt
+ virtualenv -p python3 venv && source venv/bin/activate && pip install --editable .
 ```
 
-----
-
-## Download the model and the scorer
-
-For English model and scorer, follow below links
+- 3. Download the model and the scorer. For English model and scorer, follow below links
 
 ```shell
 wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.pbmm -O deepspeech_model.pbmm
@@ -45,49 +40,60 @@ wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0
 For other languages, you can place them in the current working directory under the names _deepspeech_model.pbmm_ for the
 model and _deepspeech_model.scorer_ for the scorer.
 
+- 4. Migrations are done using [Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment)
+
+- 5. Running the server 
+```shell
+python3 run.py
+```
 ## Usage
 
 ----
 
-### Running the server
+#### Register a new user and request a new token to access the API
 
 ```shell
-python run.py
+curl -X POST -H "Content-Type: application/json" -d '{"username": "forrestgump", "email": "fgump@yourdomain.com", "password": "yourpassword"}' http://0.0.0.0:8000/users
 ```
 
-or
-
-### Docker
-
-Build image and run container
+to get a token 
 
 ```shell
-docker-compose up
+curl -H "Content-Type: application/json" -d '{"username": "forrestgump", "password": "yourpassword"}' http://localhost:8000/auth
 ```
 
-- Sending speech-to-text requests to server using HTTP
+If both steps are done correctly, you should get a token in below format
 
 ```shell
-curl -X POST -F "speech=@2830-3980-0043.wav" http://0.0.0.0:8000/api/v1/stt/http
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws"}
 ```
 
-and using the websocket (open another Shell window). It is simply running below Python script to because websockets
-don't support _curl_
+With this token, you have access to different endpoints of the API.
 
+#### Sending STT (speech-to-text) requests to server
+
+- STT the HTTP way
 ```shell
-python test_websocket.py
+curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" -F "speech=@2830-3980-0043.wav" http://0.0.0.0:8000/api/stt/http
 ```
 
-in both cases, after transcription the response looks like
+- STT the WebSocket way (simple test)
+
+WebSockets don't support _curl_. To take advantage of this feature, you will have to write a web app to send request to <span style="color:yellow">_ws://0.0.0.0:8000/api/stt/ws_</span>
+```shell
+python3 test_websocket.py
+```
 
 ```shell
 {"message": "experience proves this", "time": 1.4718825020026998}
 ```
 
+#### Hot-words
+
 - Add a hot-word
 
 ```shell
-curl -X POST -d '{"football": 1.56}' http://0.0.0.0:8000/api/v1/hw/add
+curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" -d '{"football": 1.56}' http://0.0.0.0:8000/api/hw/
 ```
 
 Output
@@ -99,7 +105,7 @@ Output
 - Erase a hot-word
 
 ```shell
-curl -X DELETE -d '{"football": ""}' http://0.0.0.0:8000/api/v1/hw/delete
+curl -X DELETE -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" -d '{"football": ""}' http://0.0.0.0:8000/api/hw/
 ```
 
 Output
@@ -111,7 +117,7 @@ Output
 - Erase all hot-words
 
 ```shell
-curl -X DELETE http://0.0.0.0:8000/api/v1/hw/delete/all
+curl -X DELETE -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" http://0.0.0.0:8000/api/hw/delete/
 ```
 
 Output

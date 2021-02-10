@@ -1,7 +1,7 @@
 import websocket
 
 websocket = websocket.WebSocket()
-websocket.connect('ws://0.0.0.0:8000/api/v1/stt/ws')
+websocket.connect('ws://0.0.0.0:8000/api/stt/ws')
 
 try:
     with open('2830-3980-0043.wav', mode='rb') as file:

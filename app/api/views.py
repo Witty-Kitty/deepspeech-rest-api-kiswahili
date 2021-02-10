@@ -7,8 +7,8 @@ from sanic.exceptions import InvalidUsage
 from sanic.log import logger
 from sanic.response import json as sanic_json
 from sanic.views import HTTPMethodView
+from sanic_jwt import protected
 
-from app import app_bp
 from app.api import api_bp
 from app.api.engine import SpeechToTextEngine
 from app.responses import SttResponse, HotWordResponse
@@ -17,13 +17,14 @@ stt_engine = SpeechToTextEngine()
 executor = ThreadPoolExecutor()
 
 
-@app_bp.route('')
+@api_bp.route('')
 async def index(request):
     return response.text('DeepSpeech REST API says Hello')
 
 
 class HotWordView(HTTPMethodView):
     """ Implementation of create and delete of hot words with usage of Class-Based views """
+    decorators = [protected()]
 
     async def post(self, request):
         """ Implementation of create of a hot word. """
@@ -51,18 +52,20 @@ class HotWordView(HTTPMethodView):
             return sanic_json(HotWordResponse('The boost of hot-word is missing.').__dict__)
 
 
-api_bp.add_route(HotWordView.as_view(), '/v1/hw')
+api_bp.add_route(HotWordView.as_view(), '/hw')
 
 
 # Route for erasing all hot words
-@api_bp.route('/v1/hw/delete/all', methods=['DELETE'])
+@api_bp.route('/hw/delete/', methods=['DELETE'])
+@protected()
 async def delete_all_hot_words(request):
     results = stt_engine.clear_hot_words()
     return sanic_json(HotWordResponse(results).__dict__)
 
 
 # HTTP route for speech to text
-@api_bp.route('/v1/stt/http', methods=['GET', 'POST'])
+@api_bp.route('/stt/http', methods=['GET', 'POST'])
+@protected()
 async def speech_to_text_http(request):
     current_app = request.app
     speech = request.files.get('speech')
@@ -94,4 +97,4 @@ async def speech_to_text_websocket(request, websocket):
         await websocket.close()
 
 
-api_bp.add_websocket_route(speech_to_text_websocket, '/v1/stt/ws')
+api_bp.add_websocket_route(speech_to_text_websocket, '/stt/ws')

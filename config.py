@@ -15,6 +15,8 @@ class Config(object):
     SANIC_HOST: str = env.str('SANIC_HOST', default='0.0.0.0')
     SANIC_PORT: int = env.int('SANIC_PORT', default=8000)
     SANIC_ENV: str = env.str('SANIC_ENV', default='dev')
+    SECRET_KEY: str = env.str('SECRET_KEY')
+    DATABASE_URI: str = env.str('DATABASE_URI')
 
 
 class DevelopmentConfig(Config):

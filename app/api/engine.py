@@ -2,10 +2,18 @@ import wave
 from io import BytesIO
 from pathlib import Path
 
+import ffmpeg
 import numpy as np
 from deepspeech import Model
 
-from app.helpers import normalize_audio_input
+
+def normalize_audio_input(audio):
+    output, err = ffmpeg.input('pipe:0').output('pipe:1', f='WAV', acodec='pcm_s16le', ac=1, ar='16k', loglevel='error',
+                                                hide_banner=None).run(input=audio, capture_stdout=True,
+                                                                      capture_stderr=True)
+    if err:
+        raise Exception(err)
+    return output
 
 
 class SpeechToTextEngine:
@@ -19,7 +27,7 @@ class SpeechToTextEngine:
 
     def run(self, audio):
         """
-        Based on https://github.com/zelo/deepspeech-rest-api/blob/master/stt/engine.py
+
         """
         normalized_audio = normalize_audio_input(audio)
         audio_streams = BytesIO(normalized_audio)

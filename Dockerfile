@@ -32,7 +32,6 @@ ADD --chown=api:api app/ app/
 # Copying the model and other needed .py files
 ADD deepspeech_model.pbmm deepspeech_model.pbmm
 ADD deepspeech_model.scorer deepspeech_model.scorer
-ADD factory.py factory.py
 ADD run.py run.py
 ADD config.py config.py
 

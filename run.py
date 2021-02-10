@@ -1,6 +1,10 @@
-from factory import create_app
+from sanic_jwt import initialize
+
+from app import create_app
+from app.users.auth import authenticate, retrieve_user, extend_payload
 
 app = create_app()
+initialize(app, authenticate=authenticate, retrieve_user=retrieve_user, extend_payload=extend_payload)
 
 if __name__ == "__main__":
     HOST, PORT, DEBUG = app.config['HOST'], app.config['PORT'], app.config['DEBUG']

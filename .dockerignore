@@ -1,11 +1,10 @@
 
-
 .DS_Store
 
 #docker
 .env
 
-#python + flask
+#python + framework
 *.egg-info
 __pycache__/
 *.py[cod]
