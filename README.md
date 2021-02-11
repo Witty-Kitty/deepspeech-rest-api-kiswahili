@@ -7,9 +7,7 @@
 ---
 
 This REST API is built on top of Mozilla's [DeepSpeech](https://github.com/mozilla/DeepSpeech). It is written based on
-[examples](https://github.com/mozilla/DeepSpeech-examples) provided by Mozilla.
-
-It accepts HTTP methods such as GET and POST as well as WebSocket. To perform transcription using HTTP methods is
+[examples](https://github.com/mozilla/DeepSpeech-examples) provided by Mozilla. It accepts HTTP methods such as GET and POST as well as WebSocket. To perform transcription using HTTP methods is
 appropriate for relatively short audio files while the WebSocket can be used even for longer audio recordings.
 
 
@@ -17,7 +15,7 @@ appropriate for relatively short audio files while the WebSocket can be used eve
 
 ## Project setup
 
-- 1. Clone the repository to your local machine and change directory to _deepspeech-rest-api_
+- 1. Clone the repository to your local machine and change directory to `deepspeech-rest-api`
 
 ```shell
 git clone https://github.com/fabricekwizera/deepspeech-rest-api.git && cd deepspeech-rest-api 
@@ -32,13 +30,15 @@ and install the project in editable mode (locally).
 
 - 3. Download the model and the scorer. For English model and scorer, follow below links
 
-```shell
-wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.pbmm -O deepspeech_model.pbmm
-wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.scorer -O deepspeech_model.scorer
+```bash
+wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.pbmm \ 
+  -O deepspeech_model.pbmm
+wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.1/deepspeech-0.9.1-models.scorer \
+  -O deepspeech_model.scorer
 ```
 
-For other languages, you can place them in the current working directory under the names _deepspeech_model.pbmm_ for the
-model and _deepspeech_model.scorer_ for the scorer.
+For other languages, you can place the two files in the current working directory under the names `deepspeech_model.pbmm` for the
+model and `deepspeech_model.scorer` for the scorer.
 
 - 4. Migrations are done using [Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment)
 
@@ -46,26 +46,47 @@ model and _deepspeech_model.scorer_ for the scorer.
 ```shell
 python3 run.py
 ```
-## Usage
+## Usage of the API
 
 ----
 
 #### Register a new user and request a new token to access the API
 
 ```shell
-curl -X POST -H "Content-Type: application/json" -d '{"username": "forrestgump", "email": "fgump@yourdomain.com", "password": "yourpassword"}' http://0.0.0.0:8000/users
+curl -X POST \
+http://0.0.0.0:8000/users \
+-H 'Content-Type: application/json' \
+-d '{
+"username": "forrestgump", 
+"email": "fgump@yourdomain.com", 
+"password": "yourpassword"
+}'
 ```
 
-to get a token 
+```json
+{
+  "message": "User forrestgump is successfully created."
+}
+```
+
+to generate a JWT token  
 
 ```shell
-curl -H "Content-Type: application/json" -d '{"username": "forrestgump", "password": "yourpassword"}' http://localhost:8000/auth
+curl -X POST \
+http://localhost:8000/auth \
+-H 'Content-Type: application/json' \
+-d '{
+"username": "forrestgump", 
+"password": "yourpassword"
+}'
 ```
 
 If both steps are done correctly, you should get a token in below format
 
-```shell
-{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws"}
+```json
+{
+  "access_token":"JWT_token"
+}
 ```
 
 With this token, you have access to different endpoints of the API.
@@ -74,18 +95,24 @@ With this token, you have access to different endpoints of the API.
 
 - STT the HTTP way
 ```shell
-curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" -F "speech=@2830-3980-0043.wav" http://0.0.0.0:8000/api/stt/http
+curl -X POST \
+http://0.0.0.0:8000/api/stt/http \
+-H 'Authorization: Bearer JWT_token' \
+-F 'speech=@2830-3980-0043.wav'
 ```
 
 - STT the WebSocket way (simple test)
 
-WebSockets don't support _curl_. To take advantage of this feature, you will have to write a web app to send request to <span style="color:yellow">_ws://0.0.0.0:8000/api/stt/ws_</span>
+WebSockets don't support `curl`. To take advantage of this feature, you will have to write a web app to send request to `ws://0.0.0.0:8000/api/stt/ws`
 ```shell
 python3 test_websocket.py
 ```
 
-```shell
-{"message": "experience proves this", "time": 1.4718825020026998}
+```json
+{
+  "message": "experience proves this", 
+  "time": 1.4718825020026998
+}
 ```
 
 #### Hot-words
@@ -93,35 +120,52 @@ python3 test_websocket.py
 - Add a hot-word
 
 ```shell
-curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" -d '{"football": 1.56}' http://0.0.0.0:8000/api/hw/
+curl -X POST \
+http://0.0.0.0:8000/api/hw/ \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer JWT_token' \
+-d '{"football": 1.56}'
 ```
 
 Output
 
-```shell
-{"message":" 'football' hot-word with boost '1.56' was added."}
+```json
+{
+  "message":" 'football' hot-word with boost '1.56' was added."
+}
 ```
 
 - Erase a hot-word
 
 ```shell
-curl -X DELETE -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" -d '{"football": ""}' http://0.0.0.0:8000/api/hw/
+curl -X DELETE \
+http://0.0.0.0:8000/api/hw/ \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer JWT_token' \
+-d '{"football": ""}'
 ```
 
 Output
 
-```shell
-{"message":" 'football' hot-word was erased."}
+```json
+{
+  "message":" 'football' hot-word was erased."
+}
 ```
 
 - Erase all hot-words
 
 ```shell
-curl -X DELETE -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTI5MDkxNTZ9.HbmcCwm1CM3sQMV5D8_EueyuIYuAAC0Z9baH0-k35Ws" http://0.0.0.0:8000/api/hw/delete/
+curl -X DELETE \
+http://0.0.0.0:8000/api/hw/delete/ \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer JWT_token' 
 ```
 
 Output
 
-```shell
-{"message":"All hot-words were erased."}
+```json
+{
+  "message":"All hot-words were erased."
+}
 ```
