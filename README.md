@@ -103,10 +103,14 @@ http://0.0.0.0:8000/api/stt/http \
 
 - STT the WebSocket way (simple test)
 
-WebSockets don't support `curl`. To take advantage of this feature, you will have to write a web app to send request to `ws://0.0.0.0:8000/api/stt/ws`
+WebSockets don't support `curl`. To take advantage of this feature, you will have to write a web app to send request to `ws://0.0.0.0:8000/api/stt/ws`. 
+
+ 
+Below command can be used to check if the WebSocket is running.
 ```shell
 python3 test_websocket.py
 ```
+In the both cases (HTTP and WebSocket), you should get a result in below format.
 
 ```json
 {

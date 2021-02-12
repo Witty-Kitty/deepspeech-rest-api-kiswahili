@@ -66,7 +66,7 @@ async def delete_all_hot_words(request):
 # HTTP route for speech to text
 @api_bp.route('/stt/http', methods=['GET', 'POST'])
 @protected()
-async def speech_to_text_http(request):
+async def transcribe_with_http(request):
     current_app = request.app
     speech = request.files.get('speech')
     if not speech:
@@ -81,7 +81,7 @@ async def speech_to_text_http(request):
 
 
 # WebSocket route for speech to text
-async def speech_to_text_websocket(request, websocket):
+async def transcribe_with_ws(request, websocket):
     current_app = request.app
     while True:
         try:
@@ -97,4 +97,4 @@ async def speech_to_text_websocket(request, websocket):
         await websocket.close()
 
 
-api_bp.add_websocket_route(speech_to_text_websocket, '/stt/ws')
+api_bp.add_websocket_route(transcribe_with_ws, '/stt/ws')
