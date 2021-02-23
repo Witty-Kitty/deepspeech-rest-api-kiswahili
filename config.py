@@ -7,7 +7,7 @@ env.read_env()
 
 class Config(object):
     """
-
+    These are the default configurations of the API.
     """
 
     SANIC_DEBUG: bool = env.bool('SANIC_DEBUG', default=False)
@@ -21,7 +21,10 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     """
+    These configurations are to be used in a development environment.
 
+    This class inherits the default attributes from `Config` and defines
+    those that can only be found in development mode.
     """
 
     SANIC_DEBUG: bool = env.bool('SANIC_DEBUG', default=True)
@@ -29,7 +32,10 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     """
+    These configurations are to be used in a testing environment.
 
+    This class inherits the default attributes from `Config` and defines
+    those that can only be found in testing mode.
     """
 
     SANIC_TESTING: bool = env.bool('SANIC_TESTING', default=False)
@@ -37,7 +43,10 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     """
+    These configurations are to be used in a production environment.
 
+    This class inherits the default attributes from `Config` and defines
+    those that can only be found in production mode.
     """
 
     SANIC_DEBUG: bool = env.bool('SANIC_DEBUG', default=False)

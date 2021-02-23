@@ -1,11 +1,10 @@
 from datetime import datetime
 
-from environs import Env
 from sqlalchemy import Column, String, Integer, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from werkzeug.security import generate_password_hash, check_password_hash
-from config import Config
 
+from config import Config
 
 secret_key = Config.SECRET_KEY
 
@@ -42,7 +41,7 @@ class UserMixin(object):
         """
         Checks if two  `UserMixin` objects are equal
         """
-        if isinstance(UserMixin, other_object):
+        if isinstance(other_object, UserMixin):
             return self.get_id() == other_object.get_id()
         return NotImplemented
 
@@ -108,11 +107,9 @@ class User(UserMixin, Base):
             data['email'] = self.email
         return data
 
-    def from_dict(self, data, user_update=False):
+    def from_dict(self, data):
         for field in ['username', 'email']:
             if field in data:
                 setattr(self, field, data[field])
         if 'password' in data:
             self.set_password(data['password'])
-        if user_update:
-            self.modified_at = datetime.utcnow

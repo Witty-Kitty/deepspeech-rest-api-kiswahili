@@ -4,7 +4,9 @@ from pathlib import Path
 
 import ffmpeg
 import numpy as np
+from deepspeech import Metadata
 from deepspeech import Model
+from sanic.log import logger
 
 
 def normalize_audio_input(audio):
@@ -19,16 +21,16 @@ def normalize_audio_input(audio):
 class SpeechToTextEngine:
     """ Class to perform speech-to-text transcription and related functionality """
 
-    def __init__(self):
+    def __init__(self, scorer='deepspeech_model.scorer') -> None:
         """ Initializing the DeepSpeech model """
         self.model = Model(model_path=Path(__file__).parents[2].joinpath('deepspeech_model.pbmm').absolute().as_posix())
         self.model.enableExternalScorer(
-            scorer_path=Path(__file__).parents[2].joinpath('deepspeech_model.scorer').absolute().as_posix())
+            scorer_path=Path(__file__).parents[2].joinpath(scorer).absolute().as_posix())
 
-    def run(self, audio):
-        """
+    def run(self, audio) -> str:
+        """ Receives the audio,  normalizes it and is sent to the model to be transcribed. Returns the result of the
+        transcribe audio in string format."""
 
-        """
         normalized_audio = normalize_audio_input(audio)
         audio_streams = BytesIO(normalized_audio)
         with wave.Wave_read(audio_streams) as wav:
@@ -36,7 +38,7 @@ class SpeechToTextEngine:
         results = self.model.stt(audio_buffer=audio_streams)
         return results
 
-    def run_with_metadata(self, audio):
+    def run_with_metadata(self, audio) -> Metadata:
         normalized_audio = normalize_audio_input(audio)
         audio_streams = BytesIO(normalized_audio)
         with wave.Wave_read(audio_streams) as wav:
@@ -44,21 +46,40 @@ class SpeechToTextEngine:
         results = self.model.sttWithMetadata(audio_buffer=audio_streams)
         return results
 
-    def add_hot_word(self, word, boost):
-        try:
-            self.model.addHotWord(word, boost)
-            return f"'{word}' hot-word with boost '{boost}' was added."
-        except RuntimeError:
-            return f"Hot-word was already added."
+    def add_hot_words(self, data) -> list:
+        """ Receives data in form of hot-words and boosts, adds them to the language model and return the list of the
+        added hot-words """
 
-    def erase_hot_word(self, word):
+        all_hot_words = []
         try:
-            self.model.eraseHotWord(word)
-            return f"'{word}' hot-word is erased."
-        except RuntimeError:
-            return f"That hot-word can't be found."
+            logger.info('----------------------------------------------------')
+            for hot_word in data:
+                # Change all the characters of the hot-word to lower case
+                word = hot_word.lower()
 
-    def clear_hot_words(self):
+                # Get numeric value of the boost
+                boost = float(data.get(hot_word))
+
+                # Adding the hot-word and its boost to the language model
+                self.model.addHotWord(hot_word, boost)
+
+                # Printing on the prompt the activity
+                logger.info(f"`{word}` hot-word with boost `{boost}` was added.")
+                all_hot_words.append(word)
+            return all_hot_words
+        except RuntimeError:
+            return []
+
+    def erase_hot_word(self, hot_words) -> None:
+        try:
+            for hot_word in hot_words:
+                self.model.eraseHotWord(hot_word)
+                logger.info(f"`{hot_word}` hot-word is erased.")
+            logger.info('----------------------------------------------------')
+        except RuntimeError:
+            return
+
+    def clear_hot_words(self) -> str:
         try:
             self.model.clearHotWords()
             return f"All hot-words were erased."

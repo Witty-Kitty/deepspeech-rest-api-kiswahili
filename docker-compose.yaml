@@ -15,9 +15,4 @@ services:
       - SANIC_PORT=${SANIC_PORT}
       - SANIC_ENV=${SANIC_ENV}
       - SECRET_KEY=${SECRET_KEY}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_PORT}
-      - DB_PASS=${DB_PASS}
-      - DB_DBNAME=${DB_NAME}
       - DATABASE_URI=${DATABASE_URI}
