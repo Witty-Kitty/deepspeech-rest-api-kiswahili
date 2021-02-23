@@ -139,7 +139,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
     curl -X POST \
     http://0.0.0.0:8000/api/stt/http \
     -H 'Authorization: Bearer JWT_token' \
-    -F 'audio=@2830-3980-0043.wav' \
+    -F 'audio=@8455-210777-0068.wav' \
     -F 'paris=-1000' \
     -F 'power=1000' \
     -F 'parents=-1000'
