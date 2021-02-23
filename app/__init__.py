@@ -2,6 +2,10 @@ from sanic import Sanic
 
 from config import TestingConfig, ProductionConfig, DevelopmentConfig
 
+from sanic import Blueprint
+
+app_bp = Blueprint('app', url_prefix='/')
+
 
 def create_app():
     app = Sanic(name='DeepSpeech REST API')
@@ -23,6 +27,8 @@ def create_app():
 
     from app.errors import errors_bp
     app.blueprint(errors_bp)
+
+    app.blueprint(app_bp)
 
     return app
 
