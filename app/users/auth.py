@@ -1,7 +1,11 @@
+from aredis import StrictRedis
 from sanic_jwt.exceptions import AuthenticationFailed
 
 from app.database import scoped_session
 from app.models import User
+from datetime import datetime, timedelta
+
+aredis = StrictRedis()
 
 
 async def authenticate(request, *args, **kwargs):
@@ -33,6 +37,17 @@ async def retrieve_user(request, payload, *args, **kwargs):
 
 
 async def extend_payload(payload, user):
-    user_id = user.to_dict().get('id')
-    payload.update({'user_id': user_id})
+    user_id = user.id
+    exp = (datetime.now() + timedelta(days=30)).timestamp()
+    payload.update({'user_id': user_id, 'exp': exp})
     return payload
+
+
+async def store_refresh_token(user_id, refresh_token, *args, **kwargs):
+    key = f'refresh_token_{user_id}'
+    await aredis.set(key, refresh_token)
+
+
+async def retrieve_refresh_token(request, user_id, *args, **kwargs):
+    key = f'refresh_token_{user_id}'
+    return await aredis.get(key)

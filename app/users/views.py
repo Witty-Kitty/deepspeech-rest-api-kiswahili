@@ -24,7 +24,7 @@ async def register_user(request):
         if session.query(User).filter(User.email == data['email']).first():
             return sanic_json(Response('Please use a different email address.').__dict__)
         user = User()
-        user.from_dict(data, user_update=False)
+        user.from_dict(data)
         session.add(user)
         session.commit()
         return sanic_json(Response('User {} is successfully created.'.format(user.username)).__dict__)
@@ -38,7 +38,7 @@ async def get_user(request, id, user):
 
     if user.id == int(id):
         with scoped_session() as session:
-            user = session.query(User).filter(User.id == id).first()
+            user = session.query(User).filter(User.id == int(id)).first()
             return sanic_json(user.to_dict())
     else:
         raise Unauthorized('Unauthorized access.')
@@ -54,7 +54,7 @@ async def update_user(request, id, user):
     if user.id != int(id):
         raise Unauthorized('Unauthorized access.')
     with scoped_session() as session:
-        ret_user = session.query(User).filter(User.id == id).first()
+        ret_user = session.query(User).filter(User.id == int(id)).first()
         data = request.json or {}
         if 'username' in data and data['username'] != ret_user.username and session.query(User).filter(
                 User.username == data['username']).first():
