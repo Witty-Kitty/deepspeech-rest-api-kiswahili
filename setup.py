@@ -19,14 +19,12 @@ setup(
         'sqlalchemy==1.3.23',
         'werkzeug==1.0.1',
         'sanic-validation==0.5.1',
-        'psycopg2==2.7.7',
+        'psycopg2',
         'ffmpeg-python==0.2.0',
-        'numpy==1.20.1',
+        'numpy',
         'deepspeech==0.9.3',
         'alembic==1.5.4',
-        'websocket-client==0.57.0',
         'aredis==1.1.8',
-        'click-spinner==0.1.10',
         'requests==2.25.1'
     ],
     classifiers=[
