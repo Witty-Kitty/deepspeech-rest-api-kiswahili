@@ -67,7 +67,7 @@ Register a new user and request a new `JWT`_ token to access the API
 .. code-block:: console
 
     curl -X POST \
-    http://0.0.0.0:8000/users \
+    http://localhost:5000/users \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
@@ -89,7 +89,7 @@ To generate a JWT token to access the API
 .. code-block:: console
 
     curl -X POST \
-    http://0.0.0.0:8000/token \
+    http://localhost:5000/token \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
@@ -102,26 +102,11 @@ If both steps are done correctly, you should get a token in below format
 .. code-block:: json
 
     {
-        "access_token": "JWT_token",
-        "refresh_token": "Refresh_token"
+        "access_token": "JWT_token"
     }
 
 
-With this ``JWT_token``, you have access to different endpoints of the API, and the ``Refresh_token`` is used to refresh the access token
-when it expires.
-
-To refresh a JWT token
-
-.. code-block:: console
-
-    curl -X POST \
-    http://0.0.0.0:8000/token/refresh \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer JWT_token" \
-    -d '{
-        "refresh_token": "Refresh_token"
-    }'
-
+With this ``JWT_token``, you have access to different endpoints of the API.
 
 
 Performing STT (Speech-To-Text)
@@ -137,7 +122,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
     cURL
 
     curl -X POST \
-    http://0.0.0.0:8000/api/stt/http \
+    http://localhost:5000/api/stt/http \
     -H 'Authorization: Bearer JWT_token' \
     -F 'audio=@8455-210777-0068.wav' \
     -F 'paris=-1000' \
@@ -153,10 +138,10 @@ Change directory to ``audio`` and use the WAV files provided for testing.
 
     jwt_token = 'JWT_token'
     headers = {'Authorization': 'Bearer ' + jwt_token}
+    url = 'http://localhost:5000/api/stt/http'
     hot_words = {'paris': -1000, 'power': 1000, 'parents': -1000}
     audio_filename = 'audio/8455-210777-0068.wav'
     audio = [('audio', open(audio_filename, 'rb'))]
-    url = 'http://0.0.0.0:8000/api/stt/http'
     response = requests.post(url, data=hot_words, files=audio, headers=headers)
     print(response.json())
 

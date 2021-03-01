@@ -36,12 +36,15 @@ async def register_user(request):
 async def get_user(request, id, user):
     """ Retrieves from the DB a particular user using his `id` """
 
-    if user.id == int(id):
-        with scoped_session() as session:
-            user = session.query(User).filter(User.id == int(id)).first()
-            return sanic_json(user.to_dict())
+    if user:
+        if user.id == int(id):
+            with scoped_session() as session:
+                user = session.query(User).filter(User.id == int(id)).first()
+                return sanic_json(user.to_dict())
+        else:
+            raise Unauthorized('Unauthorized access.')
     else:
-        raise Unauthorized('Unauthorized access.')
+        raise Unauthorized('Please provide credentials.')
 
 
 @users_bp.route('/<id>', methods=['PUT'])
@@ -51,31 +54,34 @@ async def get_user(request, id, user):
 async def update_user(request, id, user):
     """ Updates an already existing user """
 
-    if user.id != int(id):
-        raise Unauthorized('Unauthorized access.')
-    with scoped_session() as session:
-        ret_user = session.query(User).filter(User.id == int(id)).first()
-        data = request.json or {}
-        if 'username' in data and data['username'] != ret_user.username and session.query(User).filter(
-                User.username == data['username']).first():
-            return sanic_json(Response('Please use a different username.').__dict__)
-        if 'email' in data and data['email'] != ret_user.email and session.query(User).filter(
-                User.email == data['email']).first():
-            return sanic_json(Response('Please use a different email address.').__dict__)
-        if 'password' in data:
-            user.set_password(data['password'])
-            session.query(User).filter(User.id == int(id)).update(
-                {User.username: data['username'], User.email: data['email'],
-                 User.password: user.password,
-                 User.modified_at: datetime.utcnow()})
-            session.commit()
-            return sanic_json(Response('User successfully updated.').__dict__)
-        else:
-            session.query(User).filter(User.id == int(id)).update(
-                {User.username: data['username'], User.email: data['email'],
-                 User.modified_at: datetime.utcnow()})
-            session.commit()
-            return sanic_json(Response('User successfully updated.').__dict__)
+    if user:
+        if user.id != int(id):
+            raise Unauthorized('Unauthorized access.')
+        with scoped_session() as session:
+            ret_user = session.query(User).filter(User.id == int(id)).first()
+            data = request.json or {}
+            if 'username' in data and data['username'] != ret_user.username and session.query(User).filter(
+                    User.username == data['username']).first():
+                return sanic_json(Response('Please use a different username.').__dict__)
+            if 'email' in data and data['email'] != ret_user.email and session.query(User).filter(
+                    User.email == data['email']).first():
+                return sanic_json(Response('Please use a different email address.').__dict__)
+            if 'password' in data:
+                user.set_password(data['password'])
+                session.query(User).filter(User.id == int(id)).update(
+                    {User.username: data['username'], User.email: data['email'],
+                     User.password: user.password,
+                     User.modified_at: datetime.utcnow()})
+                session.commit()
+                return sanic_json(Response('User successfully updated.').__dict__)
+            else:
+                session.query(User).filter(User.id == int(id)).update(
+                    {User.username: data['username'], User.email: data['email'],
+                     User.modified_at: datetime.utcnow()})
+                session.commit()
+                return sanic_json(Response('User successfully updated.').__dict__)
+    else:
+        raise Unauthorized('Please provide credentials.')
 
 
 @users_bp.route('/<id>', methods=['DELETE'])
@@ -84,11 +90,14 @@ async def update_user(request, id, user):
 async def delete_user(request, id, user):
     """ Deletes an existing user from the DB"""
 
-    if user.id == int(id):
-        with scoped_session() as session:
-            session.query(User).filter(User.id == int(id)).delete()
-            return sanic_json(Response('User successfully removed.').__dict__)
-    raise Unauthorized('Unauthorized access.')
+    if user:
+        if user.id == int(id):
+            with scoped_session() as session:
+                session.query(User).filter(User.id == int(id)).delete()
+                return sanic_json(Response('User successfully removed.').__dict__)
+        raise Unauthorized('Unauthorized access.')
+    else:
+        raise Unauthorized('Please provide credentials.')
 
 
 @users_bp.route('/', methods=['GET'])
