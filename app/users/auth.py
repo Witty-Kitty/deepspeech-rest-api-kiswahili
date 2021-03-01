@@ -1,9 +1,10 @@
+from datetime import datetime, timedelta
+
 from aredis import StrictRedis
 from sanic_jwt.exceptions import AuthenticationFailed
 
 from app.database import scoped_session
 from app.models import User
-from datetime import datetime, timedelta
 
 aredis = StrictRedis()
 
@@ -42,6 +43,8 @@ async def extend_payload(payload, user):
     payload.update({'user_id': user_id, 'exp': exp})
     return payload
 
+
+# To be revisited as they are causing "aredis.exceptions.ConnectionError"
 
 async def store_refresh_token(user_id, refresh_token, *args, **kwargs):
     key = f'refresh_token_{user_id}'

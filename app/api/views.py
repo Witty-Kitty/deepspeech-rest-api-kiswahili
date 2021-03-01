@@ -19,7 +19,7 @@ executor = ThreadPoolExecutor()
 
 @app_bp.route('')
 async def index(request):
-    return response.text('DeepSpeech REST API says Hello')
+    return response.html('<h1>DeepSpeech REST API says Hello &#128075;&#127998;</h1>')
 
 
 @api_bp.route('/stt/http', methods=['POST'])

@@ -15,6 +15,7 @@ class Config(object):
     SANIC_HOST: str = env.str('SANIC_HOST', default='0.0.0.0')
     SANIC_PORT: int = env.int('SANIC_PORT', default=8000)
     SANIC_ENV: str = env.str('SANIC_ENV', default='dev')
+    SANIC_FORWARDED_SECRET: str = env.str('SANIC_FORWARDED_SECRET')
     SECRET_KEY: str = env.str('SECRET_KEY')
     DATABASE_URI: str = env.str('DATABASE_URI')
 
@@ -27,7 +28,7 @@ class DevelopmentConfig(Config):
     those that can only be found in development mode.
     """
 
-    SANIC_DEBUG: bool = env.bool('SANIC_DEBUG', default=True)
+    DEBUG: bool = env.bool('SANIC_DEBUG')
 
 
 class TestingConfig(Config):
@@ -38,7 +39,7 @@ class TestingConfig(Config):
     those that can only be found in testing mode.
     """
 
-    SANIC_TESTING: bool = env.bool('SANIC_TESTING', default=False)
+    TESTING: bool = True
 
 
 class ProductionConfig(Config):
@@ -48,5 +49,5 @@ class ProductionConfig(Config):
     This class inherits the default attributes from `Config` and defines
     those that can only be found in production mode.
     """
-
-    SANIC_DEBUG: bool = env.bool('SANIC_DEBUG', default=False)
+    TESTING: bool = False
+    DEBUG: bool = False
