@@ -27,7 +27,10 @@ setup(
         'websocket-client==0.57.0',
         'aredis==1.1.8',
         'click-spinner==0.1.10',
-        'requests==2.25.1'
+        'requests==2.25.1',
+        'gunicorn==18.0.0',
+        'uvicorn==0.13.4',
+        'pytest-sanic==1.7.0'
     ],
     classifiers=[
         'Framework :: Sanic',

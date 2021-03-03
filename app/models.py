@@ -88,7 +88,7 @@ class User(UserMixin, Base):
 
     def __repr__(self):
         """ String representation of the user """
-        return '<User: {}>'.format(self.username)
+        return f'User: {self.username}'
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

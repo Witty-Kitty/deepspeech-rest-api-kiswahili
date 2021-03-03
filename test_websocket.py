@@ -2,7 +2,7 @@ import click_spinner
 import websocket
 
 websocket = websocket.WebSocket()
-websocket.connect('ws://0.0.0.0:8000/api/stt/ws')
+websocket.connect('ws://0.0.0.0:5000/api/stt/ws')
 
 try:
     print('Performing speech-to-text with WebSocket...')

@@ -11,6 +11,8 @@ deepspeech==0.9.3
 alembic==1.5.4
 websocket-client==0.57.0
 aredis==1.1.8
-uwsgi==2.0.19.1
 click-spinner==0.1.10
 requests==2.25.1
+gunicorn==18.0.0
+uvicorn==0.13.4
+pytest-sanic==1.7.0
