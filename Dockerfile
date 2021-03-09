@@ -1,20 +1,19 @@
 FROM python:3.8 as build
 
-# Installing Python dependencies and creating a virtual environment for the project
-RUN python -m venv /venv
+# make explicit workdir
+RUN mkdir /WORKDIR
+WORKDIR /WORKDIR
+# create a virtual environment for the project
+RUN python -m venv venv
+# Updating PATH environment variable by adding the virtual environment
+ENV PATH=/WORKDIR/venv/bin/:$PATH
+ADD requirements.txt requirements.txt
+RUN python -m pip install -U pip==21.0.0 wheel
+RUN python -m pip install -r requirements.txt
 
 # cURL deepspeech models to /workdir
-RUN mkdir /workdir
-WORKDIR /workdir
 RUN curl -L https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm -o deepspeech_model.pbmm
 RUN curl -L https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer -o deepspeech_model.scorer
-
-# Updating PATH environment variable by adding the virtual environment
-ENV PATH=/venv/bin/:$PATH
-ADD requirements.txt requirements.txt
-RUN pip install -U pip
-RUN pip install wheel
-RUN pip install -r requirements.txt
 
 FROM python:3.8
 
@@ -28,10 +27,9 @@ RUN apt-get update \
 RUN groupadd --gid=1000 api \
  && useradd --uid=1000 --gid=1000 --system api
 USER api
-COPY --from=build --chown=api:api /venv/ /venv/
-ENV PATH=/venv/bin/:$PATH
-COPY --from=build --chown=api:api /workdir/ /workdir/
-WORKDIR /workdir
+COPY --from=build --chown=api:api /WORKDIR /WORKDIR
+ENV PATH=/WORKDIR/venv/bin/:$PATH
+WORKDIR /WORKDIR
 ADD run.py run.py
 ADD config.py config.py
 ADD --chown=api:api app/ app/
