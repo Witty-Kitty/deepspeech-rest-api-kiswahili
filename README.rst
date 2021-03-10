@@ -30,9 +30,10 @@ and install the project in editable mode (locally).
 
 .. code-block:: console
 
-    virtualenv -p python3 venv
+    python -m venv venv
     source venv/bin/activate
-    pip install --editable .
+    python -m pip install -U pip==21.0.0 wheel
+    python -m pip install --editable .
 
 
 3. Download the model and the scorer. For English model and scorer, follow below links
@@ -56,7 +57,7 @@ model and ``deepspeech_model.scorer`` for the scorer.
 
 .. code-block:: console
 
-    python3 run.py
+    python run.py
 
 Usage of the API
 ~~~~~~~~~~~~~~~~
@@ -157,7 +158,7 @@ Below command can be used to check if the WebSocket is running.
 
 .. code-block:: console
 
-    python3 test_websocket.py
+    python test_websocket.py
 
 In the both cases (HTTP and WebSocket), you should get a result in below format.
 

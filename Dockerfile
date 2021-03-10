@@ -1,15 +1,19 @@
 FROM python:3.8 as build
 
-# Installing Python dependencies and creating a virtual environment for the project
-RUN pip install -U pip virtualenv \
- && virtualenv -p `which python3` /venv/
-
+# make explicit workdir
+RUN mkdir /WORKDIR
+WORKDIR /WORKDIR
+# create a virtual environment for the project
+RUN python -m venv venv
 # Updating PATH environment variable by adding the virtual environment
-ENV PATH=/venv/bin/:$PATH
+ENV PATH=/WORKDIR/venv/bin/:$PATH
+ADD requirements.txt requirements.txt
+RUN python -m pip install -U pip==21.0.0 wheel
+RUN python -m pip install -r requirements.txt
 
-# Copying the project dependecies and installing them
-ADD ./requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+# cURL deepspeech models to /workdir
+RUN curl -L https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm -o deepspeech_model.pbmm
+RUN curl -L https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer -o deepspeech_model.scorer
 
 FROM python:3.8
 
@@ -23,21 +27,23 @@ RUN apt-get update \
 RUN groupadd --gid=1000 api \
  && useradd --uid=1000 --gid=1000 --system api
 USER api
-
-COPY --from=build --chown=api:api /venv/ /venv/
-ENV PATH=/venv/bin/:$PATH
-
-ADD --chown=api:api app/ app/
-
-# Copying the model and other needed .py files
-ADD deepspeech_model.pbmm deepspeech_model.pbmm
-ADD deepspeech_model.scorer deepspeech_model.scorer
+COPY --from=build --chown=api:api /WORKDIR /WORKDIR
+ENV PATH=/WORKDIR/venv/bin/:$PATH
+WORKDIR /WORKDIR
 ADD run.py run.py
 ADD config.py config.py
+ADD --chown=api:api app/ app/
 
+ENV SANIC_DEBUG=True
+ENV SANIC_ENV=prod
+ENV SANIC_TESTING=True
 
-WORKDIR .
+ENV DATABASE_URI=postgresql://forrest:gump@localhost/forrest
+ENV SANIC_FORWARDED_SECRET=foo
+ENV SECRET_KEY=foo
 
+ENV SANIC_HOST=0.0.0.0
+ENV SANIC_PORT=8000
 EXPOSE 8000
 
 CMD python -m run
