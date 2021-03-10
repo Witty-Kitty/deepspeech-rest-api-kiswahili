@@ -14,15 +14,17 @@ appropriate for relatively short audio files while the WebSocket can be used eve
 .. _examples: https://github.com/mozilla/DeepSpeech-examples
 
 
-Project setup
-~~~~~~~~~~~~~
+Getting started
+~~~~~~~~~~~~~~~
+
+Below instructions are for Unix/OS X, they will have to be changed to be able to run the code on Windows.
 
 1. Clone the repository to your local machine and change directory to ``deepspeech-rest-api``
 
 .. code-block:: console
 
-    git clone https://github.com/fabricekwizera/deepspeech-rest-api.git
-    cd deepspeech-rest-api
+    $ git clone https://github.com/fabricekwizera/deepspeech-rest-api.git
+    $ cd deepspeech-rest-api
 
 
 2. Create a virtual environment and activate it (assuming that it is installed your machine)
@@ -30,19 +32,19 @@ and install the project in editable mode (locally).
 
 .. code-block:: console
 
-    python -m venv venv
-    source venv/bin/activate
-    python -m pip install -U pip==21.0.0 wheel
-    python -m pip install --editable .
+    $ python -m venv venv
+    $ source venv/bin/activate
+    $ python -m pip install -U pip==21.0.0 wheel
+    $ python -m pip install --editable .
 
 
 3. Download the model and the scorer. For English model and scorer, follow below links
 
 .. code-block:: console
 
-    wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm \
+    $ wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm \
         -O deepspeech_model.pbmm
-    wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer \
+    $ wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer \
         -O deepspeech_model.scorer
 
 
@@ -57,18 +59,20 @@ model and ``deepspeech_model.scorer`` for the scorer.
 
 .. code-block:: console
 
-    python run.py
 
-Usage of the API
-~~~~~~~~~~~~~~~~
+    $ python run.py
+
+
+Usage
+~~~~~
 
 Register a new user and request a new `JWT`_ token to access the API
 
 .. _JWT: https://jwt.io/
 .. code-block:: console
 
-    curl -X POST \
-    http://localhost:5000/users \
+    $ curl -X POST \
+    http://0.0.0.0:8000/users \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
@@ -89,8 +93,8 @@ To generate a JWT token to access the API
 
 .. code-block:: console
 
-    curl -X POST \
-    http://localhost:5000/token \
+    $ curl -X POST \
+    http://0.0.0.0:8000/token \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
@@ -122,8 +126,8 @@ Change directory to ``audio`` and use the WAV files provided for testing.
 
     cURL
 
-    curl -X POST \
-    http://localhost:5000/api/stt/http \
+    $ curl -X POST \
+    http://0.0.0.0:8000/api/stt/http \
     -H 'Authorization: Bearer JWT_token' \
     -F 'audio=@8455-210777-0068.wav' \
     -F 'paris=-1000' \
@@ -139,7 +143,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
 
     jwt_token = 'JWT_token'
     headers = {'Authorization': 'Bearer ' + jwt_token}
-    url = 'http://localhost:5000/api/stt/http'
+    url = 'http://0.0.0.0:8000/api/stt/http'
     hot_words = {'paris': -1000, 'power': 1000, 'parents': -1000}
     audio_filename = 'audio/8455-210777-0068.wav'
     audio = [('audio', open(audio_filename, 'rb'))]
@@ -158,7 +162,7 @@ Below command can be used to check if the WebSocket is running.
 
 .. code-block:: console
 
-    python test_websocket.py
+    $ python test_websocket.py
 
 In the both cases (HTTP and WebSocket), you should get a result in below format.
 

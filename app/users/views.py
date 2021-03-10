@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sanic.exceptions import Unauthorized
-from sanic.response import json as sanic_json
+from sanic.response import json as sanic_json, HTTPResponse
 from sanic_jwt import protected, inject_user
 from sanic_validation import validate_json
 
@@ -14,7 +14,7 @@ from app.users.schema import create_user_schema, update_user_schema
 
 @users_bp.route('/', methods=['POST'])
 @validate_json(create_user_schema)
-async def register_user(request):
+async def register_user(request) -> HTTPResponse:
     """ Creates a user in the DB """
 
     data = request.json or {}
@@ -33,7 +33,7 @@ async def register_user(request):
 @users_bp.route('/<id>', methods=['GET'])
 @inject_user()
 @protected()
-async def get_user(request, id, user):
+async def get_user(request, id, user) -> HTTPResponse:
     """ Retrieves from the DB a particular user using his `id` """
 
     if user:
@@ -51,7 +51,7 @@ async def get_user(request, id, user):
 @validate_json(update_user_schema)
 @inject_user()
 @protected()
-async def update_user(request, id, user):
+async def update_user(request, id, user) -> HTTPResponse:
     """ Updates an already existing user """
 
     if user:
@@ -87,7 +87,7 @@ async def update_user(request, id, user):
 @users_bp.route('/<id>', methods=['DELETE'])
 @inject_user()
 @protected()
-async def delete_user(request, id, user):
+async def delete_user(request, id, user) -> HTTPResponse:
     """ Deletes an existing user from the DB"""
 
     if user:
@@ -102,7 +102,7 @@ async def delete_user(request, id, user):
 
 @users_bp.route('/', methods=['GET'])
 @protected()
-async def list_users(request):
+async def list_users(request) -> HTTPResponse:
     """ Retrieves all users from the DB"""
 
     with scoped_session() as session:

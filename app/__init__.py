@@ -7,10 +7,10 @@ from sanic import Blueprint
 app_bp = Blueprint('app', url_prefix='/')
 
 
-def create_app():
+def create_app() -> Sanic:
     app = Sanic(name='DeepSpeech REST API')
 
-    # Choosing between possible server environments
+    # Figuring out which between possible server environments
     if app.config['ENV'] == 'dev':
         app.config.update_config(DevelopmentConfig)
     elif app.config['ENV'] == 'prod':
