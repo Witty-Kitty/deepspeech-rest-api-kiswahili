@@ -117,7 +117,11 @@ With this ``JWT_token``, you have access to different endpoints of the API.
 Performing STT (Speech-To-Text)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+STT with audio files
+^^^^^^^^^^^^^^^^^^^^
+
 Change directory to ``audio`` and use the WAV files provided for testing.
+``Note the usage of hot-words and their boosts in the request.``
 
 - STT the HTTP way
 
@@ -127,7 +131,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
     cURL
 
     $ curl -X POST \
-    http://0.0.0.0:8000/api/stt/http \
+    http://0.0.0.0:8000/api/v1/stt/http \
     -H 'Authorization: Bearer JWT_token' \
     -F 'audio=@8455-210777-0068.wav' \
     -F 'paris=-1000' \
@@ -143,7 +147,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
 
     jwt_token = 'JWT_token'
     headers = {'Authorization': 'Bearer ' + jwt_token}
-    url = 'http://0.0.0.0:8000/api/stt/http'
+    url = 'http://0.0.0.0:8000/api/v1/stt/http'
     hot_words = {'paris': -1000, 'power': 1000, 'parents': -1000}
     audio_filename = 'audio/8455-210777-0068.wav'
     audio = [('audio', open(audio_filename, 'rb'))]
@@ -151,18 +155,17 @@ Change directory to ``audio`` and use the WAV files provided for testing.
     print(response.json())
 
 
-``Note the usage of hot-words and their boosts in the request.``
 
 - STT the WebSocket way (simple test)
 
-WebSockets don't support ``curl``. To take advantage of this feature, you will have to write a web app to send request to ``ws://0.0.0.0:8000/api/stt/ws``.
+WebSockets don't support ``curl``. To take advantage of this feature, you will have to write a web app to send request to the endpoint ``/api/v1/stt/ws``.
 
  
 Below command can be used to check if the WebSocket is running.
 
 .. code-block:: console
 
-    $ python test_websocket.py
+    $ python client_audio_file_stt.py
 
 In the both cases (HTTP and WebSocket), you should get a result in below format.
 
@@ -172,3 +175,13 @@ In the both cases (HTTP and WebSocket), you should get a result in below format.
       "message": "experience proves this",
       "time": 1.4718825020026998
     }
+
+STT with microphone stream
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/mic``.
+
+.. code-block:: console
+
+    $ python client_audio_file_stt.py
+

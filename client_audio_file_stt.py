@@ -1,12 +1,11 @@
-import click_spinner
 import websocket
+from halo import Halo
 
 websocket = websocket.WebSocket()
-websocket.connect('ws://0.0.0.0:5000/api/stt/ws')
+websocket.connect('ws://0.0.0.0:8000/api/stt/ws')
 
 try:
-    print('Performing speech-to-text with WebSocket...')
-    with click_spinner.spinner():
+    with Halo(text='Audio file STT with WebSocket...', text_color='cyan', spinner='spin'):
         with open('audio/8455-210777-0068.wav', mode='rb') as file:
             websocket.send('{"power":1000, "paris":-1000}')
             audio = file.read()
@@ -15,5 +14,6 @@ try:
             print()
             print(result)
             websocket.close()
-except Exception as ex:
-    print(ex)
+except KeyboardInterrupt:
+    print()
+    print('Audio file STT is interrupted')

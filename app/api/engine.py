@@ -1,9 +1,12 @@
+import queue
 import wave
 from io import BytesIO
 from pathlib import Path
 
 import ffmpeg
 import numpy as np
+import pyaudio
+import webrtcvad
 from deepspeech import Metadata
 from deepspeech import Model
 from sanic.log import logger
@@ -21,20 +24,32 @@ def normalize_audio_input(audio):
 class SpeechToTextEngine:
     """ Class to perform speech-to-text transcription and related functionality """
 
+    FORMAT = pyaudio.paInt16
+    SAMPLE_RATE = 16000
+    CHANNELS = 1
+    BLOCKS_PER_SECOND = 50
+
     def __init__(self, scorer='deepspeech_model.scorer') -> None:
         """ Initializing the DeepSpeech model """
+
         self.model = Model(model_path=Path(__file__).parents[2].joinpath('deepspeech_model.pbmm').absolute().as_posix())
         self.model.enableExternalScorer(
             scorer_path=Path(__file__).parents[2].joinpath(scorer).absolute().as_posix())
+        self.vad = webrtcvad.Vad(mode=3)
+        self.sample_rate = self.SAMPLE_RATE
+        self.buffer_queue = queue.Queue()
 
     def run(self, audio) -> str:
         """ Receives the audio,  normalizes it and is sent to the model to be transcribed. Returns the result of the
         transcribe audio in string format."""
 
         normalized_audio = normalize_audio_input(audio)
+        print(type(normalized_audio))
         audio_streams = BytesIO(normalized_audio)
+        print(type(audio_streams))
         with wave.Wave_read(audio_streams) as wav:
             audio_streams = np.frombuffer(wav.readframes(wav.getnframes()), np.int16)
+            print(type(audio_streams))
         results = self.model.stt(audio_buffer=audio_streams)
         return results
 
@@ -86,5 +101,30 @@ class SpeechToTextEngine:
         except RuntimeError:
             return f"No more hot-words are left."
 
-    def sample_rate(self):
-        return self.model.sampleRate()
+    def deep_stream(self):
+        return self.model.createStream()
+
+    def frame_generator(self, audio, sample_rate=16000, frame_duration_ms=30):
+        """
+        Takes the desired frame duration in milliseconds, the PCM data, and
+        the sample rate. Yields Frames of the requested duration.
+        """
+
+        # audio = np.frombuffer(audio, np.int16)
+        n = int(sample_rate * (frame_duration_ms / 1000.0) * 2)
+        offset = 0
+        timestamp = 0.0
+        duration = (float(n) / sample_rate) / 2.0
+        while offset + n < len(audio):
+            yield Frame(audio[offset:offset + n], timestamp, duration)
+            timestamp += duration
+            offset += n
+
+
+class Frame(object):
+    """Represents a "frame" of audio data."""
+
+    def __init__(self, frame_bytes, timestamp, duration):
+        self.bytes = frame_bytes
+        self.timestamp = timestamp
+        self.duration = duration

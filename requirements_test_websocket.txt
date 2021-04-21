@@ -1,2 +1,1 @@
-click-spinner
 websocket-client
