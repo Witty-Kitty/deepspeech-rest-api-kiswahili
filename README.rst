@@ -121,6 +121,7 @@ STT with audio files
 ^^^^^^^^^^^^^^^^^^^^
 
 Change directory to ``audio`` and use the WAV files provided for testing.
+
 ``Note the usage of hot-words and their boosts in the request.``
 
 - STT the HTTP way
@@ -176,12 +177,14 @@ In the both cases (HTTP and WebSocket), you should get a result in below format.
       "time": 1.4718825020026998
     }
 
-STT with microphone stream
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+STT with speech from microphone
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/mic``.
+Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/mic``. Also in this case, the web app well need to implement
+something similar (or far better) to the one in below code.
 
 .. code-block:: console
 
     $ python client_audio_file_stt.py
 
+Now you can stream speech to your server and see the result in the client's shell. The implementation of VAD (Voice Activity Detection) will be released pretty soon.

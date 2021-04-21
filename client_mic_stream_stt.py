@@ -4,7 +4,7 @@ from halo import Halo
 
 spinner = Halo(text='Microphone streaming STT with WebSocket: ', text_color='cyan', spinner='spin')
 websocket = websocket.WebSocket()
-websocket.connect('ws://0.0.0.0:8000/api/stt/mic')
+websocket.connect('ws://0.0.0.0:8000/api/v1/stt/mic')
 
 chunk = 1024
 sample_format = pyaudio.paInt16
