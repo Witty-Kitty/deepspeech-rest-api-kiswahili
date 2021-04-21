@@ -18,13 +18,18 @@ setup(
         'deepspeech==0.9.3',
         'environs',
         'ffmpeg-python',
+        'halo',
         'numpy',
         'psycopg2',
+        'pyaudio',
         'requests',
         'sanic',
         'sanic-jwt',
         'sanic-validation',
+        'scipy',
         'sqlalchemy',
+        'webrtcvad',
+        'websocket-client',
         'werkzeug'
     ],
     classifiers=[

@@ -23,6 +23,8 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean
 
+RUN apt-get install portaudio19-dev
+
 # User management
 RUN groupadd --gid=1000 api \
  && useradd --uid=1000 --gid=1000 --system api

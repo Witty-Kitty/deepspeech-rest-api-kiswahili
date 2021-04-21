@@ -1,8 +1,7 @@
+from sanic import Blueprint
 from sanic import Sanic
 
 from config import TestingConfig, ProductionConfig, DevelopmentConfig
-
-from sanic import Blueprint
 
 app_bp = Blueprint('app', url_prefix='/')
 
