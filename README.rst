@@ -1,11 +1,30 @@
 DeepSpeech REST API
 ===================
 
-|Open| |versions|
+.. start-badges
 
+.. list-table::
+    :widths: 15 85
+    :stub-columns: 1
 
+    * - Build
+      - | |Open| |Coverage|
+    * - Docs
+      - | |Documentation|
+    * - Package
+      - | |PyPI version|
+
+.. |Documentation| image:: https://img.shields.io/badge/user%20guide-sanic-ff0068
+   :target: https://sanicframework.org/en/
+.. |PyPI version| image:: https://img.shields.io/pypi/pyversions/google-cloud-speech.svg
+   :target: https://img.shields.io/pypi/pyversions/google-cloud-speech.svg
 .. |Open| image:: https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/
-.. |versions| image:: https://img.shields.io/pypi/pyversions/google-cloud-speech.svg
+    :target: https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/
+.. |Coverage| image:: https://codecov.io/gh/fabricekwizera/deepspeech-rest-api/branch/master/graph/badge.svg?token=RWBRSCLNN4
+      :target: https://codecov.io/gh/fabricekwizera/deepspeech-rest-api
+
+
+.. end-badges
 
 This REST API is built on top of Mozilla's `DeepSpeech`_. It is written based on `examples`_  provided by Mozilla. It accepts HTTP methods such as GET and POST as well as WebSocket. To perform transcription using HTTP methods is
 appropriate for relatively short audio files while the WebSocket can be used even for longer audio recordings.
