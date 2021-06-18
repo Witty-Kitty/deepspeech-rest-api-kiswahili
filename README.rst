@@ -199,7 +199,7 @@ In the both cases (HTTP and WebSocket), you should get a result in below format.
 STT with speech from microphone
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/mic``. Also in this case, the web app well need to implement
+Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/stt/mic``. Also in this case, the web app well need to implement
 something similar (or far better) to the one in below code.
 
 .. code-block:: console
