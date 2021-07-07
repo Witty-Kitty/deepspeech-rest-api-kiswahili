@@ -8,6 +8,7 @@ from sanic.exceptions import InvalidUsage
 from sanic.log import logger
 from sanic.request import Request
 from sanic.response import json as sanic_json, HTTPResponse
+from sanic_cors import CORS
 from sanic_jwt import protected
 from websocket import WebSocketConnectionClosedException
 
@@ -17,6 +18,7 @@ from app.api.engine import SpeechToTextEngine
 from app.responses import SttResponse
 
 sanic_app = Sanic.get_app(name='DeepSpeech REST API')
+CORS(sanic_app)
 
 stt_engine = SpeechToTextEngine()
 executor = ThreadPoolExecutor()
