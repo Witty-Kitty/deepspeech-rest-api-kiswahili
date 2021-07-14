@@ -204,7 +204,7 @@ something similar (or far better) to the one in below code.
 
 .. code-block:: console
 
-    $ python client_audio_file_stt.py
+    $ python client_mic_stream_stt.py
 
 Now you can stream speech to your server and see the result in the client's shell. The implementation of VAD (Voice Activity Detection) will be released pretty soon.
 
