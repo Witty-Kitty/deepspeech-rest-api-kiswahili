@@ -178,7 +178,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
 
 - STT the WebSocket way (simple test)
 
-WebSockets don't support ``curl``. To take advantage of this feature, you will have to write a web app to send request to the endpoint ``/api/v1/stt/ws``.
+WebSockets don't support ``curl``. To take advantage of this feature, you will have to write a web app to send request to the endpoint ``ws://0.0.0.0:8000/api/v1/stt/ws`` (in case the server is running at ``0.0.0.0:8000``).
 
  
 Below command can be used to check if the WebSocket is running.
@@ -199,7 +199,7 @@ In the both cases (HTTP and WebSocket), you should get a result in below format.
 STT with speech from microphone
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/stt/mic``. Also in this case, the web app well need to implement
+Below command can be used to stream speech using the WebSocket on the endpoint ``ws://0.0.0.0:8000/api/v1/stt/mic``. Also in this case, the web app well need to implement
 something similar (or far better) to the one in below code.
 
 .. code-block:: console
