@@ -90,7 +90,7 @@ here I will use `PostgresSQL`_
 
 - Alembic creates an ``alembic.ini`` file into the current directory and a ``migrations`` directory. The .ini file needs
   to be changed at the line ``sqlalchemy.url = driver://user:pass@localhost/dbname`` with the values from the .env file.
-- Change directory to migrations directory and update ``env.py`` file
+- Change directory to migrations directory and update ``env.py`` file by import ``Base`` from models and updating the metadata.
 
 .. code-block:: python
 
@@ -100,7 +100,7 @@ here I will use `PostgresSQL`_
     from sqlalchemy import pool
 
     from alembic import context
-    **from app.models import Base**
+    from app.models import Base
 
     # this is the Alembic Config object, which provides
     # access to the values within the .ini file in use.
@@ -114,7 +114,7 @@ here I will use `PostgresSQL`_
     # for 'autogenerate' support
     # from myapp import mymodel
     # target_metadata = mymodel.Base.metadata
-    **target_metadata = Base.metadata**
+    target_metadata = Base.metadata
 
 - Create migration script and apply it to database
 
