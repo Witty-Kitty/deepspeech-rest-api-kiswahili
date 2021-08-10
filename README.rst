@@ -74,6 +74,58 @@ model and ``deepspeech_model.scorer`` for the scorer.
 
 .. _Alembic: https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment
 
+Below steps can be followed to make the migrations up and running. The choice of the RDBMS lies with the developer,
+here I will use `PostgresSQL`_
+
+.. _PostgresSQL: https://www.postgresql.org/
+
+- With use of a valid username and password, create a database to hold all the relationships.
+- Update the line ``driver://user:pass@localhost/dbname`` in the file ``.env`` with the valid driver name, username and password.
+  Driver is ``postgresql`` in this case.
+- Initialize the migrations with
+
+.. code-block:: console
+
+    $ alembic init migrations
+
+- Alembic creates an ``alembic.ini`` file into the current directory and a ``migrations`` directory. The .ini file needs
+  to be changed at the line ``sqlalchemy.url = driver://user:pass@localhost/dbname`` with the values from the .env file.
+- Change directory to migrations directory and update ``env.py`` file
+
+.. code-block:: python
+
+    from logging.config import fileConfig
+
+    from sqlalchemy import engine_from_config
+    from sqlalchemy import pool
+
+    from alembic import context
+    **from app.models import Base**
+
+    # this is the Alembic Config object, which provides
+    # access to the values within the .ini file in use.
+    config = context.config
+
+    # Interpret the config file for Python logging.
+    # This line sets up loggers basically.
+    fileConfig(config.config_file_name)
+
+    # add your model's MetaData object here
+    # for 'autogenerate' support
+    # from myapp import mymodel
+    # target_metadata = mymodel.Base.metadata
+    **target_metadata = Base.metadata**
+
+- Create migration script and apply it to database
+
+.. code-block:: console
+
+    $ alembic revision -m "Create users table" --autogenerate
+    $ alembic upgrade head
+
+After this last step, the ``users`` table should be created in the database.
+
+
 5. Running the server
 
 .. code-block:: console
