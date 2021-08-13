@@ -24,6 +24,7 @@ setup(
         'pyaudio',
         'requests',
         'sanic',
+        'sanic-cors',
         'sanic-jwt',
         'sanic-validation',
         'scipy',

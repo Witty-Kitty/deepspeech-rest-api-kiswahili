@@ -6,7 +6,7 @@ from app.users.auth import authenticate, retrieve_user, extend_payload
 
 app = create_app()
 
-initialize(app, url_prefix='/token', authenticate=authenticate, retrieve_user=retrieve_user,
+initialize(app, url_prefix='/api/v1/token', authenticate=authenticate, retrieve_user=retrieve_user,
            extend_payload=extend_payload)
 
 if __name__ == "__main__":
