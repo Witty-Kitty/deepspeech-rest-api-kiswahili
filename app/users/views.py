@@ -12,7 +12,7 @@ from app.users import users_bp
 from app.users.schema import create_user_schema, update_user_schema
 
 
-@users_bp.route('/', methods=['POST'])
+@users_bp.route('/register', methods=['POST'])
 @validate_json(create_user_schema)
 async def register_user(request) -> HTTPResponse:
     """ Creates a user in the DB """

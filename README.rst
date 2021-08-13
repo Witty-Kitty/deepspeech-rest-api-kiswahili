@@ -143,7 +143,7 @@ Register a new user and request a new `JWT`_ token to access the API
 .. code-block:: console
 
     $ curl -X POST \
-    http://0.0.0.0:8000/api/v1/users \
+    http://0.0.0.0:8000/api/v1/users/register \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
