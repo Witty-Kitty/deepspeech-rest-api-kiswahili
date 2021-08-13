@@ -24,7 +24,7 @@ stt_engine = SpeechToTextEngine()
 executor = ThreadPoolExecutor()
 
 
-@app_bp.route('')
+@api_bp.route('')
 async def index(request: Request) -> HTTPResponse:
     return response.html('<h1>DeepSpeech REST API says Hello &#128075;&#127998;</h1>')
 
