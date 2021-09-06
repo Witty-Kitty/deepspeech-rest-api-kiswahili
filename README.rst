@@ -156,9 +156,12 @@ API response
 .. code-block:: json
 
     {
-      "message": "User forrestgump is successfully created."
+        "id": 15,
+        "username": "forrest",
+        "email": "forrest@gump.com",
+        "created_at": "2021-09-06T07:07:46.989193Z",
+        "modified_at": "2021-09-06T07:07:46.989207Z"
     }
-
 
 To generate a JWT token to access the API
 

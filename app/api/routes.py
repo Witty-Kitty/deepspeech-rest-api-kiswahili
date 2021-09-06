@@ -12,13 +12,12 @@ from sanic_cors import CORS
 from sanic_jwt import protected
 from websocket import WebSocketConnectionClosedException
 
-from app import app_bp
 from app.api import api_bp
 from app.api.engine import SpeechToTextEngine
 from app.responses import SttResponse
 
 sanic_app = Sanic.get_app(name='DeepSpeech REST API')
-CORS(sanic_app)
+CORS(sanic_app, supports_credentials=True)
 
 stt_engine = SpeechToTextEngine()
 executor = ThreadPoolExecutor()
