@@ -27,7 +27,7 @@ async def register_user(request) -> HTTPResponse:
         user.from_dict(data)
         session.add(user)
         session.commit()
-        return sanic_json(Response('User {} is successfully created.'.format(user.username)).__dict__)
+        return sanic_json(user.to_dict())
 
 
 @users_bp.route('/<id>', methods=['GET'])

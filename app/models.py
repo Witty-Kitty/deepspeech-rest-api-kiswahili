@@ -100,6 +100,7 @@ class User(UserMixin, Base):
         data = {
             'id': self.id,
             'username': self.username,
+            'email': self.email,
             'created_at': self.created_at.isoformat() + 'Z',
             'modified_at': self.modified_at.isoformat() + 'Z'
         }
