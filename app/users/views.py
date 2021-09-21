@@ -20,14 +20,14 @@ async def register_user(request) -> HTTPResponse:
     data = request.json or {}
     with scoped_session() as session:
         if session.query(User).filter(User.username == data['username']).first():
-            return sanic_json(Response('Please use a different username.').__dict__)
+            return sanic_json(Response('Please use a different username.').__dict__, status=400)
         if session.query(User).filter(User.email == data['email']).first():
-            return sanic_json(Response('Please use a different email address.').__dict__)
+            return sanic_json(Response('Please use a different email address.').__dict__, status=400)
         user = User()
         user.from_dict(data)
         session.add(user)
         session.commit()
-        return sanic_json(user.to_dict())
+        return sanic_json(user.to_dict(), status=200)
 
 
 @users_bp.route('/<id>', methods=['GET'])
@@ -42,9 +42,9 @@ async def get_user(request, id, user) -> HTTPResponse:
                 user = session.query(User).filter(User.id == int(id)).first()
                 return sanic_json(user.to_dict())
         else:
-            raise Unauthorized('Unauthorized access.')
+            raise Unauthorized('Unauthorized access.', status_code=400)
     else:
-        raise Unauthorized('Please provide credentials.')
+        raise Unauthorized('Please provide credentials.', status_code=400)
 
 
 @users_bp.route('/<id>', methods=['PUT'])
@@ -56,16 +56,16 @@ async def update_user(request, id, user) -> HTTPResponse:
 
     if user:
         if user.id != int(id):
-            raise Unauthorized('Unauthorized access.')
+            raise Unauthorized('Unauthorized access.', status_code=400)
         with scoped_session() as session:
             ret_user = session.query(User).filter(User.id == int(id)).first()
             data = request.json or {}
             if 'username' in data and data['username'] != ret_user.username and session.query(User).filter(
                     User.username == data['username']).first():
-                return sanic_json(Response('Please use a different username.').__dict__)
+                return sanic_json(Response('Please use a different username.').__dict__, status=400)
             if 'email' in data and data['email'] != ret_user.email and session.query(User).filter(
                     User.email == data['email']).first():
-                return sanic_json(Response('Please use a different email address.').__dict__)
+                return sanic_json(Response('Please use a different email address.').__dict__, status=400)
             if 'password' in data:
                 user.set_password(data['password'])
                 session.query(User).filter(User.id == int(id)).update(
@@ -73,15 +73,15 @@ async def update_user(request, id, user) -> HTTPResponse:
                      User.password: user.password,
                      User.modified_at: datetime.utcnow()})
                 session.commit()
-                return sanic_json(Response('User successfully updated.').__dict__)
+                return sanic_json(Response('User successfully updated.').__dict__, status=200)
             else:
                 session.query(User).filter(User.id == int(id)).update(
                     {User.username: data['username'], User.email: data['email'],
                      User.modified_at: datetime.utcnow()})
                 session.commit()
-                return sanic_json(Response('User successfully updated.').__dict__)
+                return sanic_json(Response('User successfully updated.').__dict__, status=200)
     else:
-        raise Unauthorized('Please provide credentials.')
+        raise Unauthorized('Please provide credentials.', status_code=400)
 
 
 @users_bp.route('/<id>', methods=['DELETE'])
@@ -94,10 +94,10 @@ async def delete_user(request, id, user) -> HTTPResponse:
         if user.id == int(id):
             with scoped_session() as session:
                 session.query(User).filter(User.id == int(id)).delete()
-                return sanic_json(Response('User successfully removed.').__dict__)
-        raise Unauthorized('Unauthorized access.')
+                return sanic_json(Response('User successfully removed.').__dict__, status=200)
+        raise Unauthorized('Unauthorized access.', status_code=400)
     else:
-        raise Unauthorized('Please provide credentials.')
+        raise Unauthorized('Please provide credentials.', status_code=400)
 
 
 @users_bp.route('/', methods=['GET'])
@@ -108,4 +108,4 @@ async def list_users(request) -> HTTPResponse:
     with scoped_session() as session:
         users = session.query(User).all()
         users = [user.to_dict() for user in users]
-        return sanic_json(users)
+        return sanic_json(users, status=200)
