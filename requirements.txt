@@ -1,6 +1,6 @@
 alembic
 aredis
-deepspeech==0.9.3
+deepspeech-tflite==0.9.3
 environs
 ffmpeg-python
 halo
