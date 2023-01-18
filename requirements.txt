@@ -8,10 +8,10 @@ numpy
 psycopg2
 pyaudio
 requests
-sanic
-sanic-cors
+sanic==18.12.0
+sanic-cors==0.10.0.post3
 sanic-jwt
-sanic-validation
+sanic-validation==0.3.1
 scipy
 sqlalchemy
 webrtcvad

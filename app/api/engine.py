@@ -11,7 +11,6 @@ from deepspeech import Metadata
 from deepspeech import Model
 from sanic.log import logger
 
-
 def normalize_audio_input(audio):
     output, err = ffmpeg.input('pipe:0').output('pipe:1', f='WAV', acodec='pcm_s16le', ac=1, ar='16k', loglevel='error',
                                                 hide_banner=None).run(input=audio, capture_stdout=True,
@@ -41,7 +40,7 @@ class SpeechToTextEngine:
     def __init__(self, scorer='deepspeech_model.scorer') -> None:
         """ Initializing the DeepSpeech model """
 
-        self.model = Model(model_path=Path(__file__).parents[2].joinpath('deepspeech_model.pbmm').absolute().as_posix())
+        self.model = Model(model_path=Path(__file__).parents[2].joinpath('deepspeech_model.tflite').absolute().as_posix())
         self.model.enableExternalScorer(
             scorer_path=Path(__file__).parents[2].joinpath(scorer).absolute().as_posix())
         self.vad = webrtcvad.Vad(mode=3)
@@ -74,6 +73,7 @@ class SpeechToTextEngine:
         all_hot_words = []
         try:
             logger.info('----------------------------------------------------')
+            logger.info(f'{data} is the list object')
             for hot_word in data:
                 # Change all the characters of the hot-word to lower case
                 word = hot_word.lower()

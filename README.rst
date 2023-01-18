@@ -1,4 +1,4 @@
-DeepSpeech REST API
+DeepSpeech REST API - KISWAHILI
 ===================
 
 .. start-badges
