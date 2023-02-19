@@ -1,6 +1,6 @@
 alembic
 aredis
-deepspeech==0.9.3
+deepspeech-tflite==0.9.3
 environs
 ffmpeg-python
 halo
@@ -8,11 +8,14 @@ numpy
 psycopg2
 pyaudio
 requests
-sanic==18.12.0
+sanic==20.12.3
 sanic-cors==0.10.0.post3
 sanic-jwt
-sanic-validation==0.3.1
+sanic-validation==0.5.1
 scipy
 sqlalchemy
 webrtcvad
+websocket
+websocket-client
+websockets
 werkzeug

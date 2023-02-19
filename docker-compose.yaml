@@ -7,7 +7,7 @@ services:
       - '0.0.0.0:8000:8000'
     restart: 'unless-stopped'
     volumes:
-      - './deepspeech_model.pbmm:/app/deepspeech_model.pbmm:ro'
+      - './deepspeech_model.tflite:/app/deepspeech_model.tflite:ro'
     environment:
       - SANIC_DEBUG=${SANIC_DEBUG}
       - SANIC_TESTING=${SANIC_TESTING}

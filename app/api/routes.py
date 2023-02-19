@@ -10,7 +10,8 @@ from sanic.request import Request
 from sanic.response import json as sanic_json, HTTPResponse
 from sanic_cors import CORS
 from sanic_jwt import protected
-from websocket import WebSocketConnectionClosedException
+#from websocket import WebSocketConnectionClosedException
+import websocket
 
 from app.api import api_bp
 from app.api.engine import SpeechToTextEngine
@@ -80,7 +81,7 @@ async def transcribe_audio_ws(request, websocket) -> None:
                 await websocket.send(json.dumps(SttResponse(text, inference_end).__dict__))
                 logger.warning(f'Received {request.method} request at {request.path}')
                 stt_engine.erase_hot_word(all_hot_words)
-        except WebSocketConnectionClosedException as wex:
+        except websocket.WebSocketConnectionClosedException as wex:
             logger.warning(f'Exception is: {str(wex)}')
             await websocket.send(json.dumps(SttResponse('Websocket connection closed').__dict__))
         except Exception as ex:
